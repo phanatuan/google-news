@@ -17,16 +17,17 @@ const fetchNews = async () => {
 
 const render = newsArray => {
   document.getElementById("display").innerHTML = renderNews(newsArray);
-  currentNumberOfStories.innerHTML = allNews.length;
+  currentNumberOfStories.innerHTML = newsArray.length;
   newsCategory.innerHTML = renderCategory(newsArray);
   handleCheckbox();
 };
 
 const renderNews = newsArray => {
+  let newsArrayToRender = 2;
   if (newsArray) {
     return newsArray
       .map(article => {
-        return `<div class="col-6">
+        return `<div class="col-xs col-md-6">
         <div class="card mb-2">
             <img src="${article.urlToImage}" 
                  alt="${article.urlToImage}"
@@ -76,15 +77,20 @@ const renderCategory = newsArray => {
 const handleCheckbox = () => {
   categoryCheckbox.forEach(eachBox =>
     eachBox.addEventListener("change", () => {
-      if (eachBox.checked) { 
-        render(allNews.filter(article => article.source.name === eachBox.value))
+      console.log(allNews);
+      if (eachBox.checked) {
+        render(
+          allNews.filter(article => article.source.name === eachBox.value)
+        );
       }
-
+      //   else {
+      //     render(
+      //       allNews.filter(article => article.source.name !== eachBox.value)
+      //     );
+      //   }
     })
   );
 };
-
-
 
 //Click for more button
 moreButton.addEventListener("click", () => {
@@ -94,3 +100,9 @@ moreButton.addEventListener("click", () => {
 });
 
 fetchNews();
+
+/*
+    render
+    Begin: allNews = []
+    Load: new Array of allNews + 20 
+*/
