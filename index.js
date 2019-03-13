@@ -9,6 +9,7 @@ const fetchNews = async () => {
   console.log(url);
   const json = await fetch(url).then(response => response.json());
   allNews = allNews.concat(json.articles)
+  console.log(allNews);
   render(allNews);
 };
 
@@ -37,6 +38,7 @@ const renderNews = newsArray => {
                  max-height = '300px'/>
             <div class="card-body">
                 <div class="card-title"><h3>${article.title}</h3></div>
+                <p>${moment(article.publishedAt).fromNow()}</p>
                 <div class="card-text">${article.description}</div>
             </div>
         </div>
