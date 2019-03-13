@@ -19,8 +19,25 @@
         <div class="row">
           <div class="filterArea col-3">
             <p>Number of Stories: <span id="currentNumberOfStories"></span></p>
-              <p>News Category</p>
-              <div name="" id="newsCategory"></div>
+            <div class="dropdown">
+              <button
+                class="btn btn-secondary dropdown-toggle"
+                type="button"
+                id="dropdownMenuButton"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+              >
+                News Category
+              </button>
+              <div class="dropdown-menu" id='categoryMenu' aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" href="#">Category 1</a>
+                <a class="dropdown-item" href="#">Category 2</a>
+                <a class="dropdown-item" href="#">Category 3</a>
+              </div>
+            </div>
+            <p>News Source:</p>
+            <div name="" id="newsSource"></div>
           </div>
           <div class="news-display col-9">
             <div class="container p-0">

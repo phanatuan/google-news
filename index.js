@@ -4,26 +4,40 @@ const moreButton = document.getElementById("more");
 const currentNumberOfStories = document.getElementById(
   "currentNumberOfStories"
 );
-const newsCategory = document.getElementById("newsCategory");
+const newsSource = document.getElementById("newsSource");
 const categoryCheckbox = document.getElementsByName("categoryCheckbox");
+const categoryMenu = document.getElementById("categoryMenu");
+const categoryList = [
+  "business",
+  "entertainment",
+  "general",
+  "health",
+  "science",
+  "sports",
+  "technology"
+];
+let sourceSelected = [];
 
 const fetchNews = async () => {
+  let category = "technology";
   const API_KEY = "8be8520c430d410785329e09e4aab662";
-  const url = `https://newsapi.org/v2/everything?q=bitcoin&apiKey=${API_KEY}&pageSize=10&page=${pageNumber}`;
+  const url = `https://newsapi.org/v2/top-headlines?country=us&apiKey=${API_KEY}&pageSize=2&page=${pageNumber}&category=${category}`;
+
   const json = await fetch(url).then(response => response.json());
   allNews = allNews.concat(json.articles);
   render(allNews);
 };
 
 const render = newsArray => {
+  //renderNews & renderSource should be independent?
   document.getElementById("display").innerHTML = renderNews(newsArray);
   currentNumberOfStories.innerHTML = newsArray.length;
-  newsCategory.innerHTML = renderCategory(newsArray);
+  newsSource.innerHTML = renderSource(newsArray);
   handleCheckbox();
+  categoryMenu.innerHTML = renderCategory();
 };
 
 const renderNews = newsArray => {
-  let newsArrayToRender = 2;
   if (newsArray) {
     return newsArray
       .map(article => {
@@ -46,7 +60,7 @@ const renderNews = newsArray => {
   }
 };
 
-const renderCategory = newsArray => {
+const renderSource = newsArray => {
   let result = {};
   //from NewsArray to Category Object (with source: count keys/value)
   for (let i = 0; i < newsArray.length; i++) {
@@ -73,21 +87,24 @@ const renderCategory = newsArray => {
     .join("");
 };
 
+const renderCategory = () => {
+  return categoryList
+    .map(category => {
+      return `<a class="dropdown-item" href="#">${category}</a>`;
+    })
+    .join("");
+};
+
 //Toogle the checkbox => Printout Value
 const handleCheckbox = () => {
   categoryCheckbox.forEach(eachBox =>
     eachBox.addEventListener("change", () => {
-      console.log(allNews);
       if (eachBox.checked) {
-        render(
-          allNews.filter(article => article.source.name === eachBox.value)
-        );
+        sourceSelected = [...sourceSelected, eachBox.value]
+      } else {
+        sourceSelected = sourceSelected.filter(source => source !== eachBox.value)
       }
-      //   else {
-      //     render(
-      //       allNews.filter(article => article.source.name !== eachBox.value)
-      //     );
-      //   }
+      console.log(sourceSelected)
     })
   );
 };
