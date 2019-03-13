@@ -5,6 +5,7 @@ const currentNumberOfStories = document.getElementById(
   "currentNumberOfStories"
 );
 const newsCategory = document.getElementById("newsCategory");
+const categoryCheckbox = document.getElementsByName("categoryCheckbox");
 
 const fetchNews = async () => {
   const API_KEY = "8be8520c430d410785329e09e4aab662";
@@ -18,6 +19,7 @@ const render = newsArray => {
   document.getElementById("display").innerHTML = renderNews(newsArray);
   currentNumberOfStories.innerHTML = allNews.length;
   newsCategory.innerHTML = renderCategory(newsArray);
+  handleCheckbox();
 };
 
 const renderNews = newsArray => {
@@ -45,28 +47,44 @@ const renderNews = newsArray => {
 
 const renderCategory = newsArray => {
   let result = {};
-  console.log(newsArray);
-
-  //from NewsArray to Category Object (with source: count keys/value) 
+  //from NewsArray to Category Object (with source: count keys/value)
   for (let i = 0; i < newsArray.length; i++) {
     if (result[newsArray[i].source.name]) {
       result[newsArray[i].source.name] = result[newsArray[i].source.name] + 1;
     } else {
-     result[newsArray[i].source.name] = 1;
+      result[newsArray[i].source.name] = 1;
     }
   }
 
   //render that Category Object
-  return Object.keys(result).map(source => { 
+  return Object.keys(result)
+    .map(source => {
       return `
         <div class='checkbox'> 
             <label> 
-                <input type='checkbox' value="${source}" /> 
+                <input type='checkbox' value="${source}"
+                       name='categoryCheckbox' /> 
                 ${source} (${result[source]})
             </label>
         </div>
-      `}).join('');
+      `;
+    })
+    .join("");
 };
+
+//Toogle the checkbox => Printout Value
+const handleCheckbox = () => {
+  categoryCheckbox.forEach(eachBox =>
+    eachBox.addEventListener("change", () => {
+      if (eachBox.checked) { 
+        render(allNews.filter(article => article.source.name === eachBox.value))
+      }
+
+    })
+  );
+};
+
+
 
 //Click for more button
 moreButton.addEventListener("click", () => {
@@ -75,5 +93,4 @@ moreButton.addEventListener("click", () => {
   fetchNews();
 });
 
-// render(allNews);
 fetchNews();
