@@ -15,14 +15,21 @@
   <body>
     <div class="container">
       <h1>Google News</h1>
-    <p>Number of Stories: <span id='currentNumberOfStories'></span></p>
-      <div class="news">
-        <div class="container p-0">
-          <div class="row" id="display">
-        </div>
+      <div class="container">
+        <div class="row">
+          <div class="filterArea col-4">
+            <p>Number of Stories: <span id="currentNumberOfStories"></span></p>
+              <p>News Category</p>
+              <div name="" id="newsCategory"></div>
+          </div>
+          <div class="news-display col-8">
+            <div class="container p-0">
+              <div class="row" id="display"></div>
+            </div>
+            <button id="more">Read More</button>
+          </div>
         </div>
       </div>
-      <button id="more">Read More</button>
     </div>
 
     <script
