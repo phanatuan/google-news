@@ -1,6 +1,7 @@
 let allNews = [];
 let pageNumber = 1;
-const moreButton = document.getElementById("more");
+const 
+Button = document.getElementById("more");
 const currentNumberOfStories = document.getElementById(
   "currentNumberOfStories"
 );
