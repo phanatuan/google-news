@@ -60,31 +60,6 @@ const renderNews = newsArray => {
   }
 };
 
-const renderCategory = newsArray => {
-  let result = {};
-  console.log(newsArray);
-
-  //from NewsArray to Category Object (with source: count keys/value) 
-  for (let i = 0; i < newsArray.length; i++) {
-    if (result[newsArray[i].source.name]) {
-      result[newsArray[i].source.name] = result[newsArray[i].source.name] + 1;
-    } else {
-     result[newsArray[i].source.name] = 1;
-    }
-  }
-
-  //render that Category Object
-  return Object.keys(result).map(source => { 
-      return `
-        <div class='checkbox'> 
-            <label> 
-                <input type='checkbox' value="${source}" /> 
-                ${source} (${result[source]})
-            </label>
-        </div>
-      `}).join('');
-};
-
 const renderSource = newsArray => {
   let result = {};
   //from NewsArray to Category Object (with source: count keys/value)
