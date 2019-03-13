@@ -9,7 +9,6 @@ const fetchNews = async () => {
   console.log(url);
   const json = await fetch(url).then(response => response.json());
   allNews = allNews.concat(json.articles)
-  console.log(allNews);
   render(allNews);
 };
 
