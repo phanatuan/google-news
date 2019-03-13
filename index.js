@@ -37,6 +37,7 @@ const renderNews = newsArray => {
                  max-height = '300px'/>
             <div class="card-body">
                 <div class="card-title"><h3>${article.title}</h3></div>
+                <p>${moment(article.publishedAt).fromNow()}</p>
                 <div class="card-text">${article.description}</div>
             </div>
         </div>
