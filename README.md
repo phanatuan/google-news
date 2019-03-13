@@ -14,7 +14,7 @@ The following **required** functionalities are completed (this is a sample):
 
 * [x] Top navigation bar with dropdown buttons
 * [x] Banner with background image, white text, and a green button
-* [x] Color or text change when mouse hovers over
+* [x] Color or text change when mouse hovers ov er
 * [x] At least 3 different body sections with different background images or colors
 * [x] 2 (or 3) card items per row in a body section
 * [x] Footer with social icons that link to the actual social pages
