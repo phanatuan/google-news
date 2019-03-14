@@ -11,6 +11,7 @@ const categoryCheckbox = document.getElementsByName("categoryCheckbox");
 const categoryMenu = document.getElementById("categoryMenu");
 const dropdownItem = document.getElementsByClassName("dropdown-item");
 let sourceSelected = [];
+let browserUrl = new URL(window.location.href);
 const categoryList = [
   "business",
   "entertainment",
@@ -20,6 +21,7 @@ const categoryList = [
   "sports",
   "technology"
 ];
+
 
 const fetchNews = async from => {
   const API_KEY = "8be8520c430d410785329e09e4aab662";
@@ -35,8 +37,6 @@ const fetchNews = async from => {
 };
 
 const render = (newsArray, from) => {
-  //renderNews & renderSource should be independent?
-  console.log(newsArray);
   let filteredNewsArray;
   if (sourceSelected.length == 0) {
     filteredNewsArray = newsArray;
@@ -65,15 +65,14 @@ const renderNews = newsArray => {
     return newsArray
       .map(article => {
         return `<div class="card mb-4 rounded-5">
-            <img src="${article.urlToImage}" 
+            ${article.urlToImage ? `<img class='image-size' 
+                 src="${article.urlToImage}" 
                  alt="${article.urlToImage}"
-                 width= '100%'
-                 height= auto
-                 max-height = '300px'/>
-            <div class="card-header"><a class='text-decoration-none' href=${article.url}><h3>${article.title}</h3></a></div>
+              />`:''}
+            <div class="card-header"><a class='text-decoration-none' href=${article.url}><h3>${trimString(article.title)}</h3></a></div>
             <div class="card-body">
                 <p>${moment(article.publishedAt).fromNow()} - <b>${article.source.name}</b> - <b>${article.author ? article.author : ''}</b> </p>
-                <div class="card-text">${article.description}</div>
+                <div class="card-text">${article.description ? article.description : ''}</div>
             </div>
         </div>`;
       })
@@ -81,9 +80,12 @@ const renderNews = newsArray => {
   }
 };
 
+const trimString = (string) => {  //Trim the title
+  return string.split(' ').slice(0,10).join(' ').concat(' ...')
+}
+
 const renderSource = newsArray => {
   let result = {};
-  //from NewsArray to Category Object (with source: count keys/value)
   for (let i = 0; i < newsArray.length; i++) {
     if (result[newsArray[i].source.name]) {
       result[newsArray[i].source.name]++;
@@ -92,7 +94,6 @@ const renderSource = newsArray => {
     }
   }
 
-  //render that Category Object
   return Object.keys(result)
     .map(source => {
       return `
@@ -138,15 +139,17 @@ const handleDropdown = () => {
     item.addEventListener("click", () => {
       category = item.innerHTML;
       changeUrl(category);
-    //   fetchNews('dropdown');
+      fetchNews('dropdown');
     })
   );
 };
 
 const changeUrl = category => {
-  let url = new URL(window.location.href);
-  url.searchParams.append("category", category);
-  window.location.href = url.toString();
+  //clear Browser URL
+  // window.location.href = browserUrl.origin + browserUrl.pathname;
+  console.log(browserUrl);
+  browserUrl.searchParams.set("category", category);
+  window.location.href = browserUrl.toString();
 };
 
 //Click for more button
@@ -162,3 +165,7 @@ fetchNews();
     Begin: allNews = []
     Load: new Array of allNews + 20 
 */
+
+
+/* Known Bug: 
+If still got checkbox, the Dropdown button not work */
