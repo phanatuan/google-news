@@ -1,5 +1,7 @@
 let allNews = [];
 let pageNumber = 1;
+let pageSize = 5;
+let category = "technology";
 const moreButton = document.getElementById("more");
 const currentNumberOfStories = document.getElementById(
   "currentNumberOfStories"
@@ -7,6 +9,7 @@ const currentNumberOfStories = document.getElementById(
 const newsSource = document.getElementById("newsSource");
 const categoryCheckbox = document.getElementsByName("categoryCheckbox");
 const categoryMenu = document.getElementById("categoryMenu");
+const dropdownItem = document.getElementsByClassName("dropdown-item");
 const categoryList = [
   "business",
   "entertainment",
@@ -18,23 +21,42 @@ const categoryList = [
 ];
 let sourceSelected = [];
 
-const fetchNews = async () => {
-  let category = "technology";
+const fetchNews = async (from) => {
   const API_KEY = "8be8520c430d410785329e09e4aab662";
-  const url = `https://newsapi.org/v2/top-headlines?country=us&apiKey=${API_KEY}&pageSize=2&page=${pageNumber}&category=${category}`;
+  const url = `https://newsapi.org/v2/top-headlines?country=us&apiKey=${API_KEY}&pageSize=${pageSize}&page=${pageNumber}&category=${category}`;
 
   const json = await fetch(url).then(response => response.json());
-  allNews = allNews.concat(json.articles);
+  if (from === 'dropdown') { 
+      allNews = json.articles;
+  } else { 
+    allNews = allNews.concat(json.articles);
+  }
   render(allNews);
 };
 
-const render = newsArray => {
+const render = (newsArray, from) => {
   //renderNews & renderSource should be independent?
-  document.getElementById("display").innerHTML = renderNews(newsArray);
+  console.log(sourceSelected);
+  let filteredNewsArray;
+  if (sourceSelected.length == 0 ) {
+    filteredNewsArray = newsArray;
+  } else {
+    filteredNewsArray = newsArray.filter(article =>
+      sourceSelected.includes(article.source.name)
+    );
+  }
+  document.getElementById("display").innerHTML = renderNews(filteredNewsArray);
   currentNumberOfStories.innerHTML = newsArray.length;
-  newsSource.innerHTML = renderSource(newsArray);
-  handleCheckbox();
+  
   categoryMenu.innerHTML = renderCategory();
+  handleDropdown();
+  
+  if (!from) { //This is to skip the Checkbox if we call the render function inside the checkbox click
+    newsSource.innerHTML = renderSource(newsArray);
+    handleCheckbox();
+  } else {
+    console.log("handleCheckbox is not run");
+  }
 };
 
 const renderNews = newsArray => {
@@ -99,12 +121,25 @@ const renderCategory = () => {
 const handleCheckbox = () => {
   categoryCheckbox.forEach(eachBox =>
     eachBox.addEventListener("change", () => {
+      console.log("hello");
       if (eachBox.checked) {
-        sourceSelected = [...sourceSelected, eachBox.value]
+        sourceSelected = [...sourceSelected, eachBox.value];
       } else {
-        sourceSelected = sourceSelected.filter(source => source !== eachBox.value)
+        sourceSelected = sourceSelected.filter(
+          source => source !== eachBox.value
+        );
       }
-      console.log(sourceSelected)
+      console.log(sourceSelected);
+      render(allNews, "checkbox");
+    })
+  );
+};
+
+const handleDropdown = () => {
+  [...dropdownItem].forEach(item =>
+    item.addEventListener("click", () => {
+      category = item.innerHTML;
+      fetchNews('dropdown');
     })
   );
 };
@@ -117,7 +152,6 @@ moreButton.addEventListener("click", () => {
 });
 
 fetchNews();
-
 /*
     render
     Begin: allNews = []
