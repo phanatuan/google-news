@@ -1,6 +1,6 @@
 let allNews = [];
 let pageNumber = 1;
-let pageSize = 10;
+let pageSize = 20;
 let category = "technology";
 const moreButton = document.getElementById("more");
 const currentNumberOfStories = document.getElementById(
@@ -10,6 +10,7 @@ const newsSource = document.getElementById("newsSource");
 const categoryCheckbox = document.getElementsByName("categoryCheckbox");
 const categoryMenu = document.getElementById("categoryMenu");
 const dropdownItem = document.getElementsByClassName("dropdown-item");
+const searchNews = document.getElementById("searchNews");
 let sourceSelected = [];
 let browserUrl = new URL(window.location.href);
 const categoryList = [
@@ -22,8 +23,14 @@ const categoryList = [
   "technology"
 ];
 
-
 const fetchNews = async from => {
+  let tabUrl = window.location.href;
+  // let regEx = \?category
+  let findCategory = tabUrl.match();
+  if (tabUrl.includes("category")) {
+    console.log("Includeeee");
+  }
+
   const API_KEY = "8be8520c430d410785329e09e4aab662";
   const url = `https://newsapi.org/v2/top-headlines?country=us&apiKey=${API_KEY}&pageSize=${pageSize}&page=${pageNumber}&category=${category}`;
 
@@ -38,15 +45,22 @@ const fetchNews = async from => {
 
 const render = (newsArray, from) => {
   let filteredNewsArray;
-  if (sourceSelected.length == 0) {
+  if (sourceSelected.length == 0 && searchNews.value.length == 0) {
     filteredNewsArray = newsArray;
-  } else {
+  } else if (sourceSelected.length == 0 && searchNews.value.length > 0) {
     filteredNewsArray = newsArray.filter(article =>
-      sourceSelected.includes(article.source.name)
+      article.title.toLowerCase().includes(searchNews.value)
+    );
+  } else {
+    filteredNewsArray = newsArray.filter(
+      article =>
+        sourceSelected.includes(article.source.name) &&
+        article.title.toLowerCase().includes(searchNews.value)
     );
   }
+
   document.getElementById("display").innerHTML = renderNews(filteredNewsArray);
-  currentNumberOfStories.innerHTML = newsArray.length;
+  currentNumberOfStories.innerHTML = filteredNewsArray.length;
 
   categoryMenu.innerHTML = renderCategory();
   handleDropdown();
@@ -55,8 +69,6 @@ const render = (newsArray, from) => {
     //This is to skip the Checkbox if we call the render function inside the checkbox click
     newsSource.innerHTML = renderSource(newsArray);
     handleCheckbox();
-  } else {
-    console.log("handleCheckbox is not run");
   }
 };
 
@@ -64,15 +76,25 @@ const renderNews = newsArray => {
   if (newsArray) {
     return newsArray
       .map(article => {
-        return `<div class="card mb-4 rounded-5">
-            ${article.urlToImage ? `<img class='image-size' 
+        return `<div class="card mb-4 rounded-bottom rounded-lg shadow-sm">
+            ${
+              article.urlToImage
+                ? `<img class='image-size img-fluid' 
                  src="${article.urlToImage}" 
                  alt="${article.urlToImage}"
-              />`:''}
-            <div class="card-header"><a class='text-decoration-none' href=${article.url}><h3>${trimString(article.title)}</h3></a></div>
+              />`
+                : ""
+            }
+            <div class="card-header"><a class='text-decoration-none' href=${
+              article.url
+            }><h3>${trimString(article.title)}</h3></a></div>
             <div class="card-body">
-                <p>${moment(article.publishedAt).fromNow()} - <b>${article.source.name}</b> - <b>${article.author ? article.author : ''}</b> </p>
-                <div class="card-text">${article.description ? article.description : ''}</div>
+                <p>${moment(article.publishedAt).fromNow()} - <b>${
+          article.source.name
+        }</b> - <b>${article.author ? article.author : ""}</b> </p>
+                <div class="card-text">${
+                  article.description ? article.description : ""
+                }</div>
             </div>
         </div>`;
       })
@@ -80,9 +102,14 @@ const renderNews = newsArray => {
   }
 };
 
-const trimString = (string) => {  //Trim the title
-  return string.split(' ').slice(0,10).join(' ').concat(' ...')
-}
+const trimString = string => {
+  //Trim the title
+  return string
+    .split(" ")
+    .slice(0, 10)
+    .join(" ")
+    .concat(" ...");
+};
 
 const renderSource = newsArray => {
   let result = {};
@@ -139,33 +166,42 @@ const handleDropdown = () => {
     item.addEventListener("click", () => {
       category = item.innerHTML;
       changeUrl(category);
-      fetchNews('dropdown');
+
+      fetchNews("dropdown");
     })
   );
+};
+
+const handleSearch = () => {
+  searchNews.addEventListener("input", () => {
+    render(allNews);
+  });
 };
 
 const changeUrl = category => {
   //clear Browser URL
   // window.location.href = browserUrl.origin + browserUrl.pathname;
   console.log(browserUrl);
+
   browserUrl.searchParams.set("category", category);
   window.location.href = browserUrl.toString();
 };
 
 //Click for more button
 moreButton.addEventListener("click", () => {
+  sourceSelected = [];
   pageNumber++;
   console.log(`Page Number: ${pageNumber}`);
   fetchNews();
 });
 
 fetchNews();
+handleSearch();
 /*
     render
     Begin: allNews = []
     Load: new Array of allNews + 20 
 */
-
 
 /* Known Bug: 
 If still got checkbox, the Dropdown button not work */

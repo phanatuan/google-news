@@ -17,19 +17,34 @@
   </head>
   <body>
     <div class="container">
-      <div class="container text-center my-4">
-          <h1>Google News</h1>
-      </div>
+      <header>
+        <div class="container">
+          <div class="text-center my-4">
+            <h1>Google News</h1>
+          </div>
+        </div>
+      </header>
       <div class="container">
         <div class="row">
-          <div class="filterArea col-3">
-            <div class="container sticky bg-light p-3">
+          <div class="filterArea mb-5 col col-lg-3">
+            <div class="container sticky bg-light p-3 shadow">
+              <button
+                class=""
+                type="button"
+                data-toggle="collapse"
+                data-target="#filterCollapse"
+                aria-controls="filterCollapse"
+                aria-expanded="false"
+                aria-label="Toggle"
+              >
+                <span class="navbar-toggler-icon bg-danger"></span>
+              </button>
               <p>
                 Number of Stories: <span id="currentNumberOfStories"></span>
               </p>
               <div class="dropdown">
                 <button
-                  class="btn btn-secondary dropdown-toggle"
+                  class="btn btn-secondary dropdown-toggle bg-primary"
                   type="button"
                   id="dropdownMenuButton"
                   data-toggle="dropdown"
@@ -44,14 +59,29 @@
                   aria-labelledby="dropdownMenuButton"
                 ></div>
               </div>
-              <div class='mt-3' name="" id="newsSource"></div>
+              <div class="mt-3" name="" id="newsSource"></div>
             </div>
           </div>
-          <div class="news-display col-9">
+          <div class="news-display col col-lg-9">
             <div class="container p-0">
+              <div class="input-group input-group-lg">
+                <input
+                  class="form-control mb-4 border-info shadow"
+                  width="100%"
+                  type="text"
+                  placeholder="Search News"
+                  id="searchNews"
+                />
+              </div>
               <div class="card-columns" id="display"></div>
             </div>
-            <button type='button' class='btn btn-lg btn-block btn-danger' id="more">Read More</button>
+            <button
+              type="button"
+              class="btn btn-lg btn-block btn-danger my-2 shadow"
+              id="more"
+            >
+              Read More
+            </button>
           </div>
         </div>
       </div>
